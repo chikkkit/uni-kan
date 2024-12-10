@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+tests/test_universal_KAN.py
+unikan/__init__.py
+unikan/universal_KAN.py
+unikan.egg-info/PKG-INFO
+unikan.egg-info/SOURCES.txt
+unikan.egg-info/dependency_links.txt
+unikan.egg-info/requires.txt
+unikan.egg-info/top_level.txt

@@ -1,2 +1,2 @@
 # uni-kan
-A universal python library for most KAN architectures
+A Python library based on pytorch for universally building KAN-type networks
