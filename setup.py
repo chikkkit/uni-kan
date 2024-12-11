@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='unikan', 
-    version='0.1.0', 
+    version='0.2.0', 
     author='Zhijie Chen', 
     author_email='zhijiechencs@gmail.com', 
     description='A Python library based on pytorch for universally building KAN-type networks', 
@@ -11,8 +11,7 @@ setup(
     url='https://github.com/chikkkit/uni-kan', 
     packages=find_packages(), 
     install_requires=[
-        'torch',
-        'numpy',
+        
     ],
     classifiers=[ 
         'Programming Language :: Python :: 3',

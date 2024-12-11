@@ -1,24 +1,16 @@
 import torch
-from unikan import UniversalKAN
 import unikan.basis as basis
+from unikan import SKAN_pure
 import torchvision
 from torch.utils.data import DataLoader
 
 # 选择设备，优先使用GPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # 构建SKAN网络，输入层784个节点，隐藏层100个节点，输出层10个节点
-# net = UniversalKAN([784, 100, 10], device=device) # default
+# net = unikan.UniversalKAN([784, 100, 10], device=device) # default
 
-function_lists = [
-    [
-        {'function': basis.lshifted_softplus, 'param_num': 1, 'node_type': 'add', 'node_num': 90, 'use_bias': True},
-        {'function': basis.lshifted_softplus, 'param_num': 1, 'node_type': 'mul', 'node_num': 10, 'use_bias': True}
-        ],
-    [
-        {'function': basis.lshifted_softplus, 'param_num': 1, 'node_type': 'add', 'node_num': 10, 'use_bias': True}
-        ] 
-    ]
-net = UniversalKAN([784, 100, 10], function_lists=function_lists, device=device)
+basis_functions = basis.lshifted_softplus
+net = SKAN_pure([784, 100, 10], basis_function=basis_functions, device=device)
 
 # 使用MNIST数据集
 transform = torchvision.transforms.Compose([

@@ -1,3 +1,2 @@
-from .universal_KAN import UniversalKANNode
-from .universal_KAN import UniversalKANLinear
-from .universal_KAN import UniversalKAN
+from .universal_KAN import UniversalKANNode, UniversalKANLinear, UniversalKAN
+from.skan import SKANLinear_pure, SKAN_pure

@@ -1,11 +1,8 @@
 import torch
 import torch.nn as nn
 import numpy as np
+from .basis import lshifted_softplus
     
-# default basis function
-def lshifted_softplus(x, k):
-    return torch.log(1 + torch.exp(k[0]*x)) - np.log(2)
-
 class UniversalKANNode(nn.Module):
     def __init__(self, in_features, out_features, node_type='add', function=lshifted_softplus, param_num=1, use_bias=True, device='cpu'):
         """
