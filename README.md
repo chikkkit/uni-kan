@@ -1,6 +1,6 @@
 # Uni-KAN
 
-<p align="center"><b>English</b> / <a href="https://github.com/chikkkit/SKAN/blob/main/README_zh.md">简体中文</a></p>
+<p align="center"><b>English</b> / <a href="https://github.com/chikkkit/uni-kan/blob/main/README_zh.md">简体中文</a></p>
 
 This is a Python library based on PyTorch for universally building KAN-type networks. Universal KAN-type networks is named Uni-KAN.
 
