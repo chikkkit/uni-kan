@@ -50,11 +50,11 @@ class UniversalKANNode(nn.Module):
         else:
             return torch.prod(output, dim=-1)
     
-    def extra_repr(self):
-        return '+ add node, in_features={}, out_features={}, function={}'.format(self.in_features, self.out_features, self.function.__name__)
+    # def extra_repr(self):
+    #     return '+ add node, in_features={}, out_features={}, function={}'.format(self.in_features, self.out_features, self.function.__name__)
     
-    def __repr__(self):
-        return self.extra_repr()
+    # def __repr__(self):
+    #     return self.extra_repr()
     
 class UniversalKANLinear(nn.Module):
     def __init__(self, in_features, out_features, function_list=[], device='cpu'):
@@ -105,14 +105,14 @@ class UniversalKANLinear(nn.Module):
     def forward(self, x):
         return torch.cat([node(x) for node in self.nodes], dim=-1)
     
-    def extra_repr(self):
-        node_reprs = [node.extra_repr() for node in self.nodes]
-        header = f'Uni-KAN Linear layer, grid_type, in_features={self.in_features}, out_features={self.out_features}\n'
-        body = '{\n        ' + '\n        '.join(node_reprs) + '\n    }'
-        return header + body
+    # def extra_repr(self):
+    #     node_reprs = [node.extra_repr() for node in self.nodes]
+    #     header = f'Uni-KAN Linear layer, grid_type, in_features={self.in_features}, out_features={self.out_features}\n'
+    #     body = '{\n        ' + '\n        '.join(node_reprs) + '\n    }'
+    #     return header + body
     
-    def __repr__(self):
-        return self.extra_repr()
+    # def __repr__(self):
+    #     return self.extra_repr()
     
 
 class UniversalKAN(nn.Module):
@@ -134,90 +134,90 @@ class UniversalKAN(nn.Module):
             x = layer(x)
         return x
     
-    def extra_repr(self):
-        layer_reprs = [layer.extra_repr() for layer in self.layers]
-        header = f'Uni-KAN network, grid_type, layer_sizes={self.layer_sizes}\n'
-        body = '{\n    ' + '    '.join(layer_reprs) + '\n}'
-        return header + body
+    # def extra_repr(self):
+    #     layer_reprs = [layer.extra_repr() for layer in self.layers]
+    #     header = f'Uni-KAN network, grid_type, layer_sizes={self.layer_sizes}\n'
+    #     body = '{\n    ' + '    '.join(layer_reprs) + '\n}'
+    #     return header + body
     
-    def __repr__(self):
-        return self.extra_repr()
+    # def __repr__(self):
+    #     return self.extra_repr()
     
-    def get_graph(self):
-        """
-        This function is to generate the computation graph of a network, return 3 parameters.
-        pos: dict, the position of each node, the key is the name of the node, the value is the position of the node. e.g.: 
-            {'0, 1': (0.0, 0), '1, 1': (-2.0, 1), '1, 2': (-1.0, 1), '1, 3': (0.0, 1), 
-            '1, 4': (1.0, 1), '1, 5': (2.0, 1), '0, b': (1.0, 0), '2, 1': (0.0, 2), '1, b': (3.0, 1)}
-        edges: list, the edges between nodes, each element is a tuple, the first is the start node, the second is the end node. e.g.:
-            [('0, 1', '1, 1'), ('0, 1', '1, 2'), ('0, 1', '1, 3'), ('0, 1', '1, 4'), ('0, 1', '1, 5'),
-            ('0, b', '1, 1'), ('0, b', '1, 2'), ('0, b', '1, 3'), ('0, b', '1, 4'), ('0, b', '1, 5'),
-            ('1, 1', '2, 1'), ('1, 2', '2, 1'), ('1, 3', '2, 1'), ('1, 4', '2, 1'), ('1, 5', '2, 1'), ('1, b', '2, 1')]
-        funcs: dict, the function of each edge, the key is the edge, the value is the function. e.g.:
-            {('0, 1', '1, 1'): <function __main__.<lambda>(x, ev=0.6927026510238647)>,
-            ('0, 1', '1, 2'): <function __main__.<lambda>(x, ev=0.7938258051872253)>,
-            ('0, 1', '1, 3'): <function __main__.<lambda>(x, ev=0.9977601766586304)>,
-            ('0, 1', '1, 4'): <function __main__.<lambda>(x, ev=-0.29473429918289185)>,
-            ('0, 1', '1, 5'): <function __main__.<lambda>(x, ev=-0.5044335126876831)>,
-            ('0, b', '1, 1'): <function __main__.<lambda>(x, ev=-1.7965008020401)>,
-            ('0, b', '1, 2'): <function __main__.<lambda>(x, ev=-0.9162623882293701)>,
-            ('0, b', '1, 3'): <function __main__.<lambda>(x, ev=-0.9161001443862915)>,
-            ('0, b', '1, 4'): <function __main__.<lambda>(x, ev=-0.06848419457674026)>,
-            ('0, b', '1, 5'): <function __main__.<lambda>(x, ev=0.2307554930448532)>,
-            ('1, 1', '2, 1'): <function __main__.<lambda>(x, ev=-1.398566722869873)>,
-            ('1, 2', '2, 1'): <function __main__.<lambda>(x, ev=-0.33302581310272217)>,
-            ('1, 3', '2, 1'): <function __main__.<lambda>(x, ev=-0.8638795018196106)>,
-            ('1, 4', '2, 1'): <function __main__.<lambda>(x, ev=0.1741543859243393)>,
-            ('1, 5', '2, 1'): <function __main__.<lambda>(x, ev=0.3043987452983856)>,
-            ('1, b', '2, 1'): <function __main__.<lambda>(x, ev=-0.7070185542106628)>}
-        """
-        pos, edges, funcs = {}, [], {}
-        # generate name of nodes from input layer
-        for i in range(self.layer_sizes[0]):
-            pos['0, {}'.format(i)] = ((-self.layer_sizes[0] + 1) / 2 + i, 0)
+    # def get_graph(self):
+    #     """
+    #     This function is to generate the computation graph of a network, return 3 parameters.
+    #     pos: dict, the position of each node, the key is the name of the node, the value is the position of the node. e.g.: 
+    #         {'0, 1': (0.0, 0), '1, 1': (-2.0, 1), '1, 2': (-1.0, 1), '1, 3': (0.0, 1), 
+    #         '1, 4': (1.0, 1), '1, 5': (2.0, 1), '0, b': (1.0, 0), '2, 1': (0.0, 2), '1, b': (3.0, 1)}
+    #     edges: list, the edges between nodes, each element is a tuple, the first is the start node, the second is the end node. e.g.:
+    #         [('0, 1', '1, 1'), ('0, 1', '1, 2'), ('0, 1', '1, 3'), ('0, 1', '1, 4'), ('0, 1', '1, 5'),
+    #         ('0, b', '1, 1'), ('0, b', '1, 2'), ('0, b', '1, 3'), ('0, b', '1, 4'), ('0, b', '1, 5'),
+    #         ('1, 1', '2, 1'), ('1, 2', '2, 1'), ('1, 3', '2, 1'), ('1, 4', '2, 1'), ('1, 5', '2, 1'), ('1, b', '2, 1')]
+    #     funcs: dict, the function of each edge, the key is the edge, the value is the function. e.g.:
+    #         {('0, 1', '1, 1'): <function __main__.<lambda>(x, ev=0.6927026510238647)>,
+    #         ('0, 1', '1, 2'): <function __main__.<lambda>(x, ev=0.7938258051872253)>,
+    #         ('0, 1', '1, 3'): <function __main__.<lambda>(x, ev=0.9977601766586304)>,
+    #         ('0, 1', '1, 4'): <function __main__.<lambda>(x, ev=-0.29473429918289185)>,
+    #         ('0, 1', '1, 5'): <function __main__.<lambda>(x, ev=-0.5044335126876831)>,
+    #         ('0, b', '1, 1'): <function __main__.<lambda>(x, ev=-1.7965008020401)>,
+    #         ('0, b', '1, 2'): <function __main__.<lambda>(x, ev=-0.9162623882293701)>,
+    #         ('0, b', '1, 3'): <function __main__.<lambda>(x, ev=-0.9161001443862915)>,
+    #         ('0, b', '1, 4'): <function __main__.<lambda>(x, ev=-0.06848419457674026)>,
+    #         ('0, b', '1, 5'): <function __main__.<lambda>(x, ev=0.2307554930448532)>,
+    #         ('1, 1', '2, 1'): <function __main__.<lambda>(x, ev=-1.398566722869873)>,
+    #         ('1, 2', '2, 1'): <function __main__.<lambda>(x, ev=-0.33302581310272217)>,
+    #         ('1, 3', '2, 1'): <function __main__.<lambda>(x, ev=-0.8638795018196106)>,
+    #         ('1, 4', '2, 1'): <function __main__.<lambda>(x, ev=0.1741543859243393)>,
+    #         ('1, 5', '2, 1'): <function __main__.<lambda>(x, ev=0.3043987452983856)>,
+    #         ('1, b', '2, 1'): <function __main__.<lambda>(x, ev=-0.7070185542106628)>}
+    #     """
+    #     pos, edges, funcs = {}, [], {}
+    #     # generate name of nodes from input layer
+    #     for i in range(self.layer_sizes[0]):
+    #         pos['0, {}'.format(i)] = ((-self.layer_sizes[0] + 1) / 2 + i, 0)
 
-        # generate name of nodes from hidden layers and output layer
-        layer_id_from = 1
-        for layer in self.layers:
-            node_id_from = 0
-            use_bias = False
-            for node in layer.nodes:
-                for i in range(node.out_features):
-                    name = f'{'+' if node.node_type == 'add' else 'x'} {layer_id_from}, {node_id_from + i}'
-                    pos[name] = ((-layer.out_features + 1) / 2 + i + node_id_from, layer_id_from)
-                node_id_from += node.out_features
-                if node.use_bias:
-                    use_bias = True
-            if use_bias:
-                name = f'{layer_id_from-1}, b'
-                pos[name] = ((-layer.in_features + 1) / 2 + layer.in_features, layer_id_from-1)
-            layer_id_from += 1
+    #     # generate name of nodes from hidden layers and output layer
+    #     layer_id_from = 1
+    #     for layer in self.layers:
+    #         node_id_from = 0
+    #         use_bias = False
+    #         for node in layer.nodes:
+    #             for i in range(node.out_features):
+    #                 name = f'{'+' if node.node_type == 'add' else 'x'} {layer_id_from}, {node_id_from + i}'
+    #                 pos[name] = ((-layer.out_features + 1) / 2 + i + node_id_from, layer_id_from)
+    #             node_id_from += node.out_features
+    #             if node.use_bias:
+    #                 use_bias = True
+    #         if use_bias:
+    #             name = f'{layer_id_from-1}, b'
+    #             pos[name] = ((-layer.in_features + 1) / 2 + layer.in_features, layer_id_from-1)
+    #         layer_id_from += 1
 
-        # generate edges and functions
-        def find_string_in_list(A, s): # need this function because in each layer, the operation of the start node is hard to get, 
-            for element in A:          # therefore we get name directly from the graph (that is the 'pos' variable)
-                if s in element:
-                    return element
-            return None
-        for layer in range(len(self.layer_sizes)-1):
-            node_id_from = 0
-            for node in self.layers[layer].nodes:
-                for i in range(node.in_features):
-                    for j in range(node.out_features):
-                        start_node = find_string_in_list(pos.keys(), f'{layer}, {i}')
-                        end_node = find_string_in_list(pos.keys(), f'{layer+1}, {node_id_from + j}')
-                        edges.append((start_node, end_node))
-                        learnale_params = [node.weight[index][j, i].item() for index in range(node.param_num)]
-                        funcs[(start_node, end_node)] = lambda x, ev=learnale_params: node.function(x, ev)
-                if node.use_bias:
-                    for j in range(node.out_features):
-                        start_node = find_string_in_list(pos.keys(), f'{layer}, b')
-                        end_node = find_string_in_list(pos.keys(), f'{layer+1}, {node_id_from + j}')
-                        edges.append((start_node, end_node))
-                        learnale_params = [node.weight[index][j, -1].item() for index in range(node.param_num)]
-                        funcs[(start_node, end_node)] = lambda x, ev=learnale_params: node.function(x, ev)
-                node_id_from += node.out_features
-        return pos, edges, funcs
+    #     # generate edges and functions
+    #     def find_string_in_list(A, s): # need this function because in each layer, the operation of the start node is hard to get, 
+    #         for element in A:          # therefore we get name directly from the graph (that is the 'pos' variable)
+    #             if s in element:
+    #                 return element
+    #         return None
+    #     for layer in range(len(self.layer_sizes)-1):
+    #         node_id_from = 0
+    #         for node in self.layers[layer].nodes:
+    #             for i in range(node.in_features):
+    #                 for j in range(node.out_features):
+    #                     start_node = find_string_in_list(pos.keys(), f'{layer}, {i}')
+    #                     end_node = find_string_in_list(pos.keys(), f'{layer+1}, {node_id_from + j}')
+    #                     edges.append((start_node, end_node))
+    #                     learnale_params = [node.weight[index][j, i].item() for index in range(node.param_num)]
+    #                     funcs[(start_node, end_node)] = lambda x, ev=learnale_params: node.function(x, ev)
+    #             if node.use_bias:
+    #                 for j in range(node.out_features):
+    #                     start_node = find_string_in_list(pos.keys(), f'{layer}, b')
+    #                     end_node = find_string_in_list(pos.keys(), f'{layer+1}, {node_id_from + j}')
+    #                     edges.append((start_node, end_node))
+    #                     learnale_params = [node.weight[index][j, -1].item() for index in range(node.param_num)]
+    #                     funcs[(start_node, end_node)] = lambda x, ev=learnale_params: node.function(x, ev)
+    #             node_id_from += node.out_features
+    #     return pos, edges, funcs
 
 
 # test to ensure the functionbility of the code
