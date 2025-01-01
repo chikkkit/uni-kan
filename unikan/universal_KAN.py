@@ -106,12 +106,10 @@ class UniversalKANLinear(nn.Module):
         return torch.cat([node(x) for node in self.nodes], dim=-1)
     
     def extra_repr(self):
-        return \
-f'''Uni-KAN Linear layer, grid_type, in_features={self.in_features}, out_features={self.out_features}, 
-    {{
-        {'\n        '.join([node.extra_repr() for node in self.nodes])}
-    }}
-'''
+        node_reprs = [node.extra_repr() for node in self.nodes]
+        header = f'Uni-KAN Linear layer, grid_type, in_features={self.in_features}, out_features={self.out_features}\n'
+        body = '{\n        ' + '\n        '.join(node_reprs) + '\n    }'
+        return header + body
     
     def __repr__(self):
         return self.extra_repr()
@@ -137,11 +135,10 @@ class UniversalKAN(nn.Module):
         return x
     
     def extra_repr(self):
-        return \
-f'''Uni-KAN network, grid_type, layer_sizes={self.layer_sizes},
-{{
-    {'    '.join([layer.extra_repr() for layer in self.layers])}
-}}'''
+        layer_reprs = [layer.extra_repr() for layer in self.layers]
+        header = f'Uni-KAN network, grid_type, layer_sizes={self.layer_sizes}\n'
+        body = '{\n    ' + '    '.join(layer_reprs) + '\n}'
+        return header + body
     
     def __repr__(self):
         return self.extra_repr()
