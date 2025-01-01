@@ -4,15 +4,15 @@ from unikan import SKAN_pure
 import torchvision
 from torch.utils.data import DataLoader
 
-# 选择设备，优先使用GPU
+# Select device, prioritize GPU if available
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# 构建SKAN网络，输入层784个节点，隐藏层100个节点，输出层10个节点
+# Build SKAN network with 784 input nodes, 100 hidden nodes, and 10 output nodes
 # net = unikan.UniversalKAN([784, 100, 10], device=device) # default
 
 basis_functions = basis.lshifted_softplus
 net = SKAN_pure([784, 100, 10], basis_function=basis_functions, device=device)
 
-# 使用MNIST数据集
+# Use MNIST dataset
 transform = torchvision.transforms.Compose([
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Lambda(lambda x: x.view(-1))
@@ -24,12 +24,12 @@ test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
 lr = 0.0004
 
-# 选择Adam优化器
+# Select Adam optimizer
 optimizer = torch.optim.Adam(net.parameters(), lr=lr)
-# 选择交叉熵损失函数
+# Select Cross Entropy Loss function
 criterion = torch.nn.CrossEntropyLoss()
 
-# 训练网络
+# Train the network
 for epoch in range(10):
     net.train()
     for i, (data, target) in enumerate(train_loader):
