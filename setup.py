@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='unikan', 
-    version='0.2.2', 
+    version='0.2.3', 
     author='Zhijie Chen', 
     author_email='zhijiechencs@gmail.com', 
     description='A Python library based on pytorch for universally building KAN-type networks', 
