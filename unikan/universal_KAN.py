@@ -36,6 +36,9 @@ class UniversalKANNode(nn.Module):
     def reset_parameters(self):
         for i in range(self.param_num):
             nn.init.kaiming_uniform_(self.weight[i], a=5 ** 0.5)
+            # reset bias to 0
+            if self.use_bias:
+                nn.init.constant_(self.weight[i][:, -1], 0)
 
     def forward(self, x):
         if x.dim() == 1:
@@ -45,7 +48,7 @@ class UniversalKANNode(nn.Module):
         if self.use_bias:
             x = torch.cat([x, torch.ones_like(x[..., :1])], dim=2)
         output = self.function(x, self.weight)
-        if self.function.__name__ == 'lshifted_softplus':
+        if self.node_type == 'add':
             return torch.sum(output, dim=-1)
         else:
             return torch.prod(output, dim=-1)
