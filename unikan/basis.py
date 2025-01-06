@@ -38,4 +38,13 @@ def lshifted_softplus(x, k):
 def lgelup(x, k):
     return 0.5 * x * (1 + torch.tanh(np.sqrt(2/np.pi) * (k[0]*x + 0.044715 * k[0]**3 * x[0]**3)))
 
+def lsin(x, k):
+    return torch.sin(k[0]*x)
+
+def lcos(x, k):
+    return torch.cos(k[0]*x)
+
+def larctan(x, k):
+    return torch.arctan(k[0]*x)
+
 ## define some basis function for ...
