@@ -4,7 +4,8 @@ import numpy as np
 from .basis import lshifted_softplus
     
 class UniversalKANNode(nn.Module):
-    def __init__(self, in_features, out_features, node_type='add', function=lshifted_softplus, param_num=1, use_bias=True, device='cpu'):
+    def __init__(self, in_features, out_features, node_type='add', function=lshifted_softplus, 
+                 param_num=1, use_bias=True, device='cpu', init_method='default'):
         """
         in_features: int, the number of input features
 
@@ -19,6 +20,10 @@ class UniversalKANNode(nn.Module):
         use_bias: bool, whether to add bias to this function
 
         device: str, the device to use, default is 'cpu'
+
+        init_method: str or callable, initialization method
+            - if 'default': use kaiming_uniform_ initialization
+            - if callable: the function should take weight tensor as input and initialize it
         """
         super(UniversalKANNode, self).__init__()
         self.in_features = in_features
@@ -27,6 +32,8 @@ class UniversalKANNode(nn.Module):
         self.function = function
         self.param_num = param_num
         self.use_bias = use_bias
+        self.init_method = init_method
+        
         if self.use_bias:
             self.weight = nn.ParameterList([nn.Parameter(torch.randn(self.out_features, self.in_features + 1, device=device)) for _ in range(self.param_num)])
         else:
@@ -35,10 +42,14 @@ class UniversalKANNode(nn.Module):
 
     def reset_parameters(self):
         for i in range(self.param_num):
-            nn.init.kaiming_uniform_(self.weight[i], a=5 ** 0.5)
-            # reset bias to 0
-            if self.use_bias:
-                nn.init.constant_(self.weight[i][:, -1], 0)
+            if self.init_method == 'default':
+                nn.init.kaiming_uniform_(self.weight[i], a=5 ** 0.5)
+                # Initialize bias to 0 in default mode
+                if self.use_bias:
+                    nn.init.constant_(self.weight[i][:, -1], 0)
+            elif callable(self.init_method):
+                # For custom initialization, apply to the entire weight matrix including bias
+                self.init_method(self.weight[i])
 
     def forward(self, x):
         if x.dim() == 1:
@@ -60,14 +71,14 @@ class UniversalKANNode(nn.Module):
     #     return self.extra_repr()
     
 class UniversalKANLinear(nn.Module):
-    def __init__(self, in_features, out_features, function_list=[], device='cpu'):
+    def __init__(self, in_features, out_features, function_list=[], device='cpu', init_method='default'):
         """
         in_features: int, the number of input features
 
         out_features: int, the number of output features
         
         function_list: list, the list of basis functions
-            It shoulf be a list of function dict, each dict should have the following:
+            It should be a list of function dict, each dict should have the following:
                 'function': function, the basis function such as 'lshifted_softplus(x, k)'
                 'param_num': int, the number of parameters of a single basis function
                 'node_type': str, the type of node, 'add' or 'mul'
@@ -83,6 +94,10 @@ class UniversalKANLinear(nn.Module):
             in grid type network.
 
         device: str, the device to use, default is 'cpu'
+
+        init_method: str or callable, initialization method
+            - if 'default': use kaiming_uniform_ initialization
+            - if callable: the function should take weight tensor as input and initialize it
         """
         
         if len(function_list) == 0:
@@ -100,10 +115,14 @@ class UniversalKANLinear(nn.Module):
         for i in range(len(self.basis_function)):
             if self.basis_function[i]['node_type'] == 'mul':
                 self.nodes.append(UniversalKANNode(self.in_features, self.basis_function[i]['node_num'], 'mul',
-                                                                self.basis_function[i]['function'], self.basis_function[i]['use_bias'], device=device))
+                                                 self.basis_function[i]['function'], self.basis_function[i]['param_num'], 
+                                                 self.basis_function[i]['use_bias'], device=device, 
+                                                 init_method=init_method))
             else:
                 self.nodes.append(UniversalKANNode(self.in_features, self.basis_function[i]['node_num'], 'add',
-                                                                self.basis_function[i]['function'], self.basis_function[i]['use_bias'], device=device))
+                                                 self.basis_function[i]['function'], self.basis_function[i]['param_num'], 
+                                                 self.basis_function[i]['use_bias'], device=device, 
+                                                 init_method=init_method))
     
     def forward(self, x):
         return torch.cat([node(x) for node in self.nodes], dim=-1)
@@ -119,7 +138,7 @@ class UniversalKANLinear(nn.Module):
     
 
 class UniversalKAN(nn.Module):
-    def __init__(self, layer_sizes, function_lists=[], device='cpu'):
+    def __init__(self, layer_sizes, function_lists=[], device='cpu', init_method='default'):
         
         super(UniversalKAN, self).__init__()
         if len(function_lists) == 0:
@@ -130,7 +149,9 @@ class UniversalKAN(nn.Module):
         self.function_lists = function_lists
         self.layers = nn.ModuleList()
         for i in range(len(self.layer_sizes) - 1):
-            self.layers.append(UniversalKANLinear(self.layer_sizes[i], self.layer_sizes[i+1], self.function_lists[i], device=device))
+            self.layers.append(UniversalKANLinear(self.layer_sizes[i], self.layer_sizes[i+1], 
+                                                self.function_lists[i], device=device, 
+                                                init_method=init_method))
         
     def forward(self, x):
         for layer in self.layers:
